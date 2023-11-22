@@ -7,6 +7,8 @@ interface LaunchDataType {
   date_utc: string;
   rocket: string;
   details: string;
+  launchpad: string;
+  success: boolean;
 } 
 
 export default function LaunchData() {
@@ -31,11 +33,13 @@ export default function LaunchData() {
 
   // used this to check the first launch data of the API 
   // console.log(launchData);
-  // console.log(launchData[0]);
+  console.log(launchData[0]);
   // console.log(launchData[0].name);
   // console.log(launchData[0].date_utc);
   // console.log(launchData[0].rocket);
   // console.log(launchData[0].details);
+  // console.log(launchData[0].launchpad);
+  // console.log(launchData[0].success);
 
   return (
     <div>

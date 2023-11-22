@@ -9,6 +9,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
+import Popup from '../Popup';
 
 
 interface Column {
@@ -37,11 +38,14 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 
+
 interface LaunchDataType {
     name: string;
     date_utc: string;
     rocket: string;
     details: string;
+    launchpad: string;
+    success: boolean;
   } 
   
 interface DataProps {
@@ -51,12 +55,14 @@ interface DataProps {
 export default function LaunchTable({launchData}: DataProps) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(4);
+  const [selectedRow, setSelectedRow] = useState<LaunchDataType | null >(null); // null here aswell because there can be no selected row at the start
+  const [popupvisible, setPopupVisible] = useState(false);
 
       // check / wait if the data is available, its not available on the first render
   if (!launchData || launchData.length === 0) {
     return (
       <div>
-        <p>No launch data available</p>
+        <p>Loading...</p>
       </div>
     );
   }
@@ -66,12 +72,15 @@ export default function LaunchTable({launchData}: DataProps) {
   // const date = launchData[0].date_utc
   // const rocketID = launchData[0].rocket
   // const details = launchData[0].details
+
    
   const rows = launchData.map((launch) => ({
     name: launch.name,
     date: launch.date_utc,
     rocketID: launch.rocket,
     details: launch.details,
+    launchpad: launch.launchpad,
+    success: launch.success
   }));
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -83,7 +92,37 @@ export default function LaunchTable({launchData}: DataProps) {
     setPage(0);
   };
 
+
+  // typescript did not want to believe the type of row was the same as LaunchDataType so this functions does a manual conversion to explicitly
+  // tell typescript that the row data is the same as LaunchDataType
+  const convertToLaunchDataType = (row: { name: string; date: string; rocketID: string; details: string; launchpad: string; success: boolean }): LaunchDataType => {
+    return {
+      name: row.name,
+      date_utc: row.date,
+      rocket: row.rocketID,
+      details: row.details,
+      launchpad: row.launchpad,
+      success: row.success,
+    };
+  };
+  
+  
+
+  const handleRowClick = (row: { name: string; date: string; rocketID: string; details: string; launchpad: string; success: boolean }) => {
+    setSelectedRow(convertToLaunchDataType(row));
+    console.log('Row clicked', row);
+    setPopupVisible(true);
+    // Add more code here as needed
+  };
+  
+ 
+  const handleClosePopup = () => {
+    setPopupVisible(false);
+  };
+  
+
   return (
+    <div>
     <Paper sx={{ width: '80%', overflow: 'hidden', margin: 'auto', marginBottom: '20px' }}>
       <TableContainer sx={{ maxHeight: 600 }}>
         <Table stickyHeader aria-label="sticky table">
@@ -106,13 +145,20 @@ export default function LaunchTable({launchData}: DataProps) {
             {rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                <TableRow
+                hover
+                role="checkbox"
+                tabIndex={-1}
+                key={index}
+                onClick={() => handleRowClick(row)}
+                sx={{ cursor: 'pointer' }}
+              >
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (
             <StyledTableCell key={column.id} align={column.align}>
               {column.id === 'details' && !value ? (
-                <span>No details available.</span>
+                <span>Classified</span>
               ) : (
                 column.format && typeof value === 'number'
                   ? column.format(value)
@@ -137,5 +183,9 @@ export default function LaunchTable({launchData}: DataProps) {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </Paper>
-  );
+      {popupvisible && selectedRow && (
+        <Popup data={selectedRow} onClose={handleClosePopup} />
+      )}
+      </div>
+  );  
 }
