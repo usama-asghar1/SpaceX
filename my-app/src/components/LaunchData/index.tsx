@@ -9,6 +9,7 @@ interface LaunchDataType {
   details: string;
   launchpad: string;
   success: boolean;
+  id: string;
 } 
 
 export default function LaunchData() {
@@ -24,7 +25,6 @@ export default function LaunchData() {
         const data: LaunchDataType[] = await res.json();
         setLaunchData(data);
       };
-  
       fetchData();
     } catch (error) {
       console.log(error);
@@ -40,6 +40,7 @@ export default function LaunchData() {
   // console.log(launchData[0].details);
   // console.log(launchData[0].launchpad);
   // console.log(launchData[0].success);
+  // console.log(launchData[0].id);
 
   return (
     <div>

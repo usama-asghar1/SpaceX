@@ -46,6 +46,7 @@ interface LaunchDataType {
     details: string;
     launchpad: string;
     success: boolean;
+    id: string;
   } 
   
 interface DataProps {
@@ -80,7 +81,8 @@ export default function LaunchTable({launchData}: DataProps) {
     rocketID: launch.rocket,
     details: launch.details,
     launchpad: launch.launchpad,
-    success: launch.success
+    success: launch.success,
+    id: launch.id,
   }));
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -93,9 +95,8 @@ export default function LaunchTable({launchData}: DataProps) {
   };
 
 
-  // typescript did not want to believe the type of row was the same as LaunchDataType so this functions does a manual conversion to explicitly
-  // tell typescript that the row data is the same as LaunchDataType
-  const convertToLaunchDataType = (row: { name: string; date: string; rocketID: string; details: string; launchpad: string; success: boolean }): LaunchDataType => {
+  // used this functoin to tell typescript that the data for each row is the same as LaunchDataType interface 
+  const convertToLaunchDataType = (row: { name: string; date: string; rocketID: string; details: string; launchpad: string; success: boolean; id: string }): LaunchDataType => {
     return {
       name: row.name,
       date_utc: row.date,
@@ -103,12 +104,13 @@ export default function LaunchTable({launchData}: DataProps) {
       details: row.details,
       launchpad: row.launchpad,
       success: row.success,
+      id: row.id,
     };
   };
   
   
 
-  const handleRowClick = (row: { name: string; date: string; rocketID: string; details: string; launchpad: string; success: boolean }) => {
+  const handleRowClick = (row: { name: string; date: string; rocketID: string; details: string; launchpad: string; success: boolean; id: string }) => {
     setSelectedRow(convertToLaunchDataType(row));
     console.log('Row clicked', row);
     setPopupVisible(true);
