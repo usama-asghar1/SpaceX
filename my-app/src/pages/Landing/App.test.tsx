@@ -1,9 +1,14 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders the title of the app', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const title = screen.getByText(/SpaceX Launch Data/i);
+  expect(title).toBeInTheDocument();
+});
+
+test('renders LaunchData component', () => {
+  render(<App />);
+  const launchDataComponent = screen.getByTestId('launch-data');
+  expect(launchDataComponent).toBeInTheDocument();
 });

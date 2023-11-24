@@ -14,6 +14,8 @@ interface LaunchDataType {
     id: string;
   } 
 
+  
+
 export default function Summary() {
   const { id } = useParams();
   const [launchData, setLaunchData] = useState<LaunchDataType | null>(null);

@@ -13,7 +13,7 @@ import Popup from '../Popup';
 
 
 interface Column {
-  id: 'name' | 'date' | 'rocketID' | 'details'; // Update the column IDs
+  id: 'name' | 'date' | 'rocketID' | 'details'; 
   label: string;
   minWidth?: number;
   align?: 'right';
